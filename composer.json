@@ -1,5 +1,5 @@
 {
-    "name": "edwardtich/laravel-queue-monitor",
+    "name": "romanzipp/laravel-queue-monitor",
     "description": "Queue Monitoring for Laravel Database Job Queue",
     "type": "library",
     "license": "MIT",
@@ -31,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "edwardtich\\QueueMonitor\\": "src"
+            "romanzipp\\QueueMonitor\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "edwardtich\\QueueMonitor\\Tests\\": "tests"
+            "romanzipp\\QueueMonitor\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -45,7 +45,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "edwardtich\\QueueMonitor\\Providers\\QueueMonitorProvider"
+                "romanzipp\\QueueMonitor\\Providers\\QueueMonitorProvider"
             ]
         }
     },
