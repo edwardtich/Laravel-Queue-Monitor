@@ -30,7 +30,7 @@ class ShowQueueMonitorController
         ]);
 
         $filters = [
-            'status' => isset($data['status']) ? (int) $data['status'] : null,
+            'status' => isset($data['status']) && $data['status'] !== '' && is_numeric($data['status']) ? (int) $data['status'] : null,
             'queue' => $data['queue'] ?? 'all',
             'name' => $data['name'] ?? null,
             'custom_data' => $data['custom_data'] ?? null,
