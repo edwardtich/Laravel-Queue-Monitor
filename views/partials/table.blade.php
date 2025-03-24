@@ -57,7 +57,7 @@
 
                     @if($job->retried)
                         <div class="text-xs py-2">
-                            <span class="bg-gray-300 font-medium p-1 rounded">@lang('Retried')</span>
+                            <span class="bg-gray-300 font-medium p-1 rounded text-red dark:text-red-500">@lang('Retried')</span>
                         </div>
                     @endif
                 </td>
@@ -107,7 +107,7 @@
 
                     @if($job->status != \romanzipp\QueueMonitor\Enums\MonitorStatus::SUCCEEDED && $job->exception_message !== null)
 
-                        <textarea rows="4" class="w-64 text-xs p-1 border rounded" readonly>{{ $job->exception_message }}</textarea>
+                        <textarea rows="4" class="w-64 text-xs p-1 border rounded text-red-600 dark:text-red-600" readonly>{{ $job->exception_message }}</textarea>
 
                     @else
                         -
