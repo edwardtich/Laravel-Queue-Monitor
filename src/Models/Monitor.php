@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use romanzipp\QueueMonitor\Enums\MonitorStatus;
 use romanzipp\QueueMonitor\Models\Contracts\MonitorContract;
 
@@ -290,8 +291,10 @@ class Monitor extends Model implements MonitorContract
     {
         $this->retried = true;
         $this->save();
-
-        $response = Artisan::call('queue:retry', ['id' => $this->job_uuid]);
+        $failedJobs = DB::table('failed_jobs')
+            ->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(payload, "$.uuid")) = ?', [$this->job_uuid])
+            ->first();
+        $response = Artisan::call('queue:retry', ['id' => $failedJobs->id]);
 
         if (0 !== $response) {
             throw new \Exception(Artisan::output());

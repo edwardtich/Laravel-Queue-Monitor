@@ -122,7 +122,7 @@
                             <form action="{{ route('queue-monitor::retry', [$job]) }}" method="post">
                                 @csrf
                                 @method('patch')
-                                <button class="px-3 py-2 bg-blue-200 dark:hover:bg-blue-200  text-xs font-medium rounded transition-colors duration-150">
+                                <button class="px-3 py-2 bg-gray-200 dark:hover:bg-gray-200  text-xs font-medium rounded transition-colors duration-150" style="color: white; background-color: orange">
                                     @lang('Retry')
                                 </button>
                             </form>
