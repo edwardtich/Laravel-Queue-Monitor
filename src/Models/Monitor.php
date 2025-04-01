@@ -294,6 +294,9 @@ class Monitor extends Model implements MonitorContract
         $failedJobs = DB::table('failed_jobs')
             ->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(payload, "$.uuid")) = ?', [$this->job_uuid])
             ->first();
+        if (!$failedJobs) {
+            throw new \RuntimeException("Задача с UUID {$this->job_uuid} не найдена в таблице failed_jobs, скорее всего она была удалена.");
+        }
         $response = Artisan::call('queue:retry', ['id' => $failedJobs->id]);
 
         if (0 !== $response) {
