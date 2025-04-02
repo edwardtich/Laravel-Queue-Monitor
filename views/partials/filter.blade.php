@@ -75,7 +75,18 @@
 
                 </select>
             </div>
-
+            <div class="px-2 w-1/4">
+                <label for="payload_search"
+                       class="block mb-1 text-xs font-light text-gray-500">
+                    @lang('Body')
+                </label>
+                <input type="text"
+                       id="payload_search"
+                       name="payload_search"
+                       value="{{ $filters['payload_search'] ?? null }}"
+                       placeholder="number reservations"
+                       class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded text-sm">
+            </div>
         </div>
 
         <div class="flex justify-between mt-4">

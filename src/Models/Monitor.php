@@ -249,6 +249,12 @@ class Monitor extends Model implements MonitorContract
         return Arr::last(explode('\\', $this->name));
     }
 
+    public function getFailedJob(): ?object
+    {
+        return DB::table('failed_jobs')
+            ->whereJsonContains('payload->uuid', $this->job_uuid)
+            ->first();
+    }
     /**
      * check if the job is finished.
      *
@@ -291,16 +297,10 @@ class Monitor extends Model implements MonitorContract
     {
         $this->retried = true;
         $this->save();
-        $failedJobs = DB::table('failed_jobs')
-            ->whereRaw('JSON_UNQUOTE(JSON_EXTRACT(payload, "$.uuid")) = ?', [$this->job_uuid])
-            ->first();
-        if (!$failedJobs) {
-            throw new \RuntimeException("Задача с UUID {$this->job_uuid} не найдена в таблице failed_jobs, скорее всего она была удалена.");
-        }
-        $response = Artisan::call('queue:retry', ['id' => $failedJobs->id]);
+        $response = Artisan::call('queue:retry', ['id' => $this->job_id]);
 
         if (0 !== $response) {
-            throw new \Exception(Artisan::output());
+            throw new \RuntimeException("Задача {$this->job_id} не найдена в таблице failed_jobs, скорее всего она была удалена.");
         }
     }
 

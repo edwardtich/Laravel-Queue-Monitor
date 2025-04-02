@@ -13,6 +13,7 @@ use Illuminate\Queue\Events\JobQueued;
 use Illuminate\Support\Carbon;
 use romanzipp\QueueMonitor\Enums\MonitorStatus;
 use romanzipp\QueueMonitor\Models\Contracts\MonitorContract;
+use romanzipp\QueueMonitor\Models\Monitor;
 use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class QueueMonitor
@@ -144,7 +145,7 @@ class QueueMonitor
             'queue' => $event->job->queue ?: 'default',
             'status' => MonitorStatus::QUEUED,
             'queued_at' => now(),
-            'data' => $data ?? null,
+            'data' => isset($event->payload)? json_encode($event->payload()) : null,
         ]);
     }
 
@@ -205,14 +206,23 @@ class QueueMonitor
 
         $model = self::getModel();
 
-        /** @var \romanzipp\QueueMonitor\Models\Monitor $monitor */
+        $monitorOld = $model::query()->where('job_uuid', $job->payload()['uuid'])->get();
+        $name = $job->resolveName();
+        if (isset($monitorOld)) {
+            foreach ($monitorOld as $k => $monitor) {
+                $name = $job->resolveName()
+                    . ' retry '
+                    . '#' . $monitor->job_id;
+            }
+        }
+        /** @var Monitor $monitor */
         $monitor = $model::query()->updateOrCreate([
             'job_id' => $jobId = self::getJobId($job),
             'queue' => $job->getQueue() ?: 'default',
             'status' => MonitorStatus::QUEUED,
         ], [
             'job_uuid' => $job->uuid(),
-            'name' => $job->resolveName(),
+            'name' => $name,
             'started_at' => $now,
             'started_at_exact' => $now->format(self::TIMESTAMP_EXACT_FORMAT),
             'attempt' => $job->attempts(),
@@ -296,7 +306,8 @@ class QueueMonitor
                 'exception_message' => mb_strcut($exception->getMessage(), 0, config('queue-monitor.db_max_length_exception_message', 65535)),
             ];
         }
-
+        if ($monitor->status === MonitorStatus::FAILED) {$monitor->job_id = $monitor->getFailedJob()->id;}
+            $monitor->data = json_encode($job->payload()) !== null ? json_encode($job->payload()) : null;
         $monitor->update($attributes);
     }
 

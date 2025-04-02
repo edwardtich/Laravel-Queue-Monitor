@@ -15,6 +15,7 @@
             <th class="px-4 py-3 font-medium text-left text-xs text-gray-600 dark:text-gray-400 uppercase border-b border-gray-200 dark:border-gray-600">@lang('Duration')</th>
             <th class="px-4 py-3 font-medium text-left text-xs text-gray-600 dark:text-gray-400 uppercase border-b border-gray-200 dark:border-gray-600">@lang('Started')</th>
             <th class="px-4 py-3 font-medium text-left text-xs text-gray-600 dark:text-gray-400 uppercase border-b border-gray-200 dark:border-gray-600">@lang('Error')</th>
+            <th class="px-4 py-3 font-medium text-left text-xs text-gray-600 dark:text-gray-400 uppercase border-b border-gray-200 dark:border-gray-600">@lang('Body')</th>
 
             @if(config('queue-monitor.ui.allow_deletion') || config('queue-monitor.ui.allow_retry'))
                 <th class="px-4 py-3 font-medium text-left text-xs text-gray-600 dark:text-gray-400 uppercase border-b border-gray-200 dark:border-gray-600"></th>
@@ -113,6 +114,13 @@
                         -
                     @endif
 
+                </td>
+                <td class="p-4 text-gray-800 dark:text-gray-300 text-sm leading-5 border-b border-gray-200 dark:border-gray-600">
+                    @if($job->data)
+                        <textarea rows="4" class="w-64 text-xs p-1 border rounded @if(!$job->hasSucceeded())text-red-600 dark:text-red-600 @endif  text-green-800 dark:text-green-800" readonly>{{$job->data}}</textarea>
+                    @else
+                        -
+                    @endif
                 </td>
 
                 @if(config('queue-monitor.ui.allow_deletion') || config('queue-monitor.ui.allow_retry'))
