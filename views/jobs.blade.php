@@ -22,11 +22,13 @@
 </div>
     <nav class="flex items-center py-4 border-b border-gray-100 dark:border-gray-600">
         <h1 class="px-4 w-full font-semibold text-lg">
-            @lang('Queue Monitor')
+            @lang('Мониторинг Очереди')
         </h1>
+        @if($metrics)
         <div class="w-[24rem] px-4 font-semibold text-lg">
-            @lang('Statistics')
+            @lang('Статистика')
         </div>
+        @endif
     </nav>
 
     <main class="flex">
@@ -54,13 +56,14 @@
                         @csrf
                         @method('delete')
                         <button class="py-2 px-4 bg-red-50 dark:bg-red-200 hover:dark:bg-red-300 hover:bg-red-100 text-red-800 text-xs font-medium rounded-md transition-colors duration-150">
-                            @lang('Delete all entries')
+                            @lang('Удалить все записи')
                         </button>
                     </form>
                 </div>
             @endif
         </article>
 
+        @if($metrics)
         <aside class="flex flex-col gap-4 w-[24rem] p-4">
             @foreach($metrics->all() as $metric)
                 @include('queue-monitor::partials.metrics-card', [
@@ -68,6 +71,7 @@
                 ])
             @endforeach
         </aside>
+        @endif
 
     </main>
 

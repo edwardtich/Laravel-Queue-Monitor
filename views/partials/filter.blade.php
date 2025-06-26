@@ -7,42 +7,27 @@
             <div class="px-2 w-1/4">
                 <label for="filter_name"
                        class="block mb-1 text-xs font-light text-gray-500">
-                    @lang('Job name')
+                    @lang('Имя задания')
                 </label>
                 <input type="text"
                        id="filter_name"
                        name="name"
                        value="{{ $filters['name'] ?? null }}"
-                       placeholder="ExampleJob"
+                       placeholder="LogusSetTags"
                        class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded text-sm">
             </div>
-
-            @if(config('queue-monitor.ui.show_custom_data'))
-                <div class="px-2 w-1/4">
-                    <label for="filter_custom_data"
-                           class="block mb-1 text-xs font-light text-gray-500">
-                        @lang('Custom Data')
-                    </label>
-                    <input type="text"
-                           id="filter_custom_data"
-                           name="custom_data"
-                           value="{{ $filters['custom_data'] ?? null }}"
-                           placeholder="Example Custom Data"
-                           class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded text-sm">
-                </div>
-            @endif
 
             <div class="px-2 w-1/4">
                 <label for="filter_status"
                        class="block mb-1 text-xs font-light text-gray-500">
-                    @lang('Status')
+                    @lang('Статус')
                 </label>
                 <select name="status"
                         id="filter_status"
                         class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded text-sm appearance-none">
 
                     <option @if($filters['status'] === null) selected @endif value="">
-                        @lang('All')
+                        @lang('Все')
                     </option>
 
                     @foreach($statuses as $status => $statusName)
@@ -57,7 +42,7 @@
             <div class="px-2 w-1/4">
                 <label for="filter_queues"
                        class="block mb-1 text-xs font-light text-gray-500">
-                    @lang('Queues')
+                    @lang('Очередь')
                 </label>
                 <select name="queue"
                         id="filter_queues"
@@ -78,13 +63,13 @@
             <div class="px-2 w-1/4">
                 <label for="payload_search"
                        class="block mb-1 text-xs font-light text-gray-500">
-                    @lang('Body')
+                    @lang('Тело')
                 </label>
                 <input type="text"
                        id="payload_search"
                        name="payload_search"
                        value="{{ $filters['payload_search'] ?? null }}"
-                       placeholder="number reservations"
+                       placeholder="номер бронирования"
                        class="w-full px-3 py-2 bg-gray-50 dark:bg-gray-600 border border-gray-300 dark:border-gray-500 rounded text-sm">
             </div>
         </div>
@@ -92,12 +77,12 @@
         <div class="flex justify-between mt-4">
             <button type="submit"
                     class="py-2 px-4 bg-blue-50 dark:bg-blue-200 dark:hover:bg-blue-300 hover:bg-blue-100 text-blue-800 text-xs font-medium rounded-md transition-colors duration-150">
-                @lang('Apply Filter')
+                @lang('Применить')
             </button>
 
             <a href="{{ route('queue-monitor::index') }}"
                class="py-2 px-4 bg-gray-50 dark:bg-gray-200 dark:hover:bg-gray-300 hover:bg-gray-100 text-gray-800 text-xs font-medium rounded-md transition-colors duration-150">
-                @lang('Reset Filter')
+                @lang('Сбросить')
             </a>
         </div>
 

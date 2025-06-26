@@ -17,12 +17,12 @@
 
                 @if($metric->hasChanged())
                     @if($metric->hasIncreased())
-                        @lang('Up from')
+                        @lang('Повысилось с')
                     @else
-                        @lang('Down from')
+                        @lang('Понижено с')
                     @endif
                 @else
-                    @lang('No change from')
+                    @lang('Без изменения')
                 @endif
 
                 {{ $metric->format($metric->previousValue) }}

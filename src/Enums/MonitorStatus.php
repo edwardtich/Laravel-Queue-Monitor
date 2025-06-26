@@ -30,11 +30,11 @@ class MonitorStatus
     public static function toNamedArray(): array
     {
         return [
-            self::RUNNING => 'Running',
-            self::SUCCEEDED => 'Succeeded',
-            self::FAILED => 'Failed',
-            self::STALE => 'Stale',
-            self::QUEUED => 'Queued',
+            self::RUNNING => 'Выполняется',
+            self::SUCCEEDED => 'Сделано',
+            self::FAILED => 'Ошибка',
+            self::STALE => 'Затхлый',
+            self::QUEUED => 'Ожидание',
         ];
     }
 }
