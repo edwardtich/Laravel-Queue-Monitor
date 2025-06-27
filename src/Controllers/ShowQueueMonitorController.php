@@ -38,20 +38,20 @@ class ShowQueueMonitorController
         $jobsQuery = QueueMonitor::getModel()->newQuery()
             ->where('started_at', '>=', now()->subMonths(6));
 
-        if ($filters['status'] !== null) {
+        if (isset($filters['status']) && $filters['status'] !== null) {
             $jobsQuery->where('status', $filters['status']);
         }
 
-        if ($filters['queue'] !== 'all') {
+        if (isset($filters['queue']) && $filters['queue'] !== "all") {
             $jobsQuery->where('queue', $filters['queue']);
         }
 
-        if ($filters['name'] !== null) {
+        if (isset($filters['name']) && $filters['name'] !== '') {
             $jobsQuery->where('name', 'like', "%{$filters['name']}%")
-            ->orWhere('job_id', '=', "{$filters['name']}");
+                ->orWhere('job_id', '=', $filters['name']);
         }
 
-        if ($filters['payload_search'] !== null) {
+        if (isset($filters['payload_search']) && $filters['payload_search'] !== null) {
             $jobsQuery->where('data', 'like', "%{$filters['payload_search']}%");
         }
 
@@ -136,6 +136,7 @@ class ShowQueueMonitorController
         $failedJobsQuery = QueueMonitor::getModel()
             ->newQuery()
             ->select($count)
+            ->where('retried', MonitorStatus::NOT_RETRY)
             ->where('status', MonitorStatus::FAILED)
             ->where('started_at', '>=', Carbon::now()->subDays());
         if ('all' !== $filters['queue']) {
@@ -152,7 +153,7 @@ class ShowQueueMonitorController
                 new Metric('Количество выполненных заданий', $aggregatedInfo->count ?? 0, $aggregatedComparisonInfo->count, '%d')
             )
             ->push(
-                new Metric('Количество выполненных заданий с ошибками за сутки', $failedJobs->count ?? 0)
+                new Metric('Количество ошибок за сутки', $failedJobs->count ?? 0)
             )
             ->push(
                 new Metric('Общее время выполнения', $aggregatedInfo->total_time_elapsed ?? 0, $aggregatedComparisonInfo->total_time_elapsed, '%ds')

@@ -9,6 +9,8 @@ class MonitorStatus
     public const FAILED = 2;
     public const STALE = 3;
     public const QUEUED = 4;
+    public const NOT_RETRY = 0;
+    public const RETRY = 1;
 
     /**
      * @return int[]
