@@ -64,7 +64,6 @@ class ShowQueueMonitorController
 
         $queues = Cache::remember('queue-monitor:queues:' . now()->format('Ymd'), 86400, function () {
             return QueueMonitor::getModel()
-                ->where('started_at', '>=', now()->subYear())
                 ->select('queue')
                 ->distinct()
                 ->orderBy('queue')
@@ -101,9 +100,10 @@ class ShowQueueMonitorController
 
         $expressionTotalTime = DB::raw('SUM(TIMESTAMPDIFF(SECOND, `started_at`, `finished_at`)) as `total_time_elapsed`');
         $expressionAverageTime = DB::raw('AVG(TIMESTAMPDIFF(SECOND, `started_at`, `finished_at`)) as `average_time_elapsed`');
+        $count = DB::raw('COUNT(*) as count');
 
         $aggregationColumns = [
-            DB::raw('COUNT(*) as count'),
+            $count,
             $expressionTotalTime,
             $expressionAverageTime,
         ];
@@ -133,6 +133,16 @@ class ShowQueueMonitorController
 
         $aggregatedComparisonInfo = $comparisonQuery->first();
 
+        $failedJobsQuery = QueueMonitor::getModel()
+            ->newQuery()
+            ->select($count)
+            ->where('status', MonitorStatus::FAILED)
+            ->where('started_at', '>=', Carbon::now()->subDays());
+        if ('all' !== $filters['queue']) {
+            $failedJobsQuery->where('queue', $filters['queue']);
+        };
+        $failedJobs = $failedJobsQuery->first();
+
         if (null === $aggregatedInfo || null === $aggregatedComparisonInfo) {
             return $metrics;
         }
@@ -140,6 +150,9 @@ class ShowQueueMonitorController
         return $metrics
             ->push(
                 new Metric('Количество выполненных заданий', $aggregatedInfo->count ?? 0, $aggregatedComparisonInfo->count, '%d')
+            )
+            ->push(
+                new Metric('Количество выполненных заданий с ошибками за сутки', $failedJobs->count ?? 0)
             )
             ->push(
                 new Metric('Общее время выполнения', $aggregatedInfo->total_time_elapsed ?? 0, $aggregatedComparisonInfo->total_time_elapsed, '%ds')
