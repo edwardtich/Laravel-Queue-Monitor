@@ -145,6 +145,7 @@ class QueueMonitor
             'queue' => $event->job->queue ?: 'default',
             'status' => MonitorStatus::QUEUED,
             'queued_at' => now(),
+            'started_at' => now(),
             'data' => isset($event->payload)? json_encode($event->payload()) : null,
         ]);
     }

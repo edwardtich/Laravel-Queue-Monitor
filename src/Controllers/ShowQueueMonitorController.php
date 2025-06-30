@@ -144,6 +144,17 @@ class ShowQueueMonitorController
         };
         $failedJobs = $failedJobsQuery->first();
 
+        $queuedJobsQuery = QueueMonitor::getModel()
+            ->newQuery()
+            ->select($count)
+            ->where('status', MonitorStatus::QUEUED)
+            ->where('started_at', '>=', Carbon::now()->subDays());
+        if ('all' !== $filters['queue']) {
+            $queuedJobsQuery->where('queue', $filters['queue']);
+        };
+
+        $queuedJobs = $queuedJobsQuery->first();
+
         if (null === $aggregatedInfo || null === $aggregatedComparisonInfo) {
             return $metrics;
         }
@@ -154,6 +165,9 @@ class ShowQueueMonitorController
             )
             ->push(
                 new Metric('Количество ошибок за сутки', $failedJobs->count ?? 0)
+            )
+            ->push(
+                new Metric('Количество заданий в ожидании за сутки', $queuedJobs->count ?? 0)
             )
             ->push(
                 new Metric('Общее время выполнения', $aggregatedInfo->total_time_elapsed ?? 0, $aggregatedComparisonInfo->total_time_elapsed, '%ds')
